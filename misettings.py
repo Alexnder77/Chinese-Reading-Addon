@@ -78,7 +78,7 @@ class SettingsGui(QScrollArea):
         self.allFields = self.getAllFields()
         # self.setMinimumSize(800, 550);
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
-        self.setWindowTitle("Migaku Chinese Settings (%s)"%versionNumber)
+        #self.setWindowTitle("Migaku Chinese Settings (%s)"%versionNumber)
         self.addonPath = path
         self.setWindowIcon(QIcon(join(self.addonPath, 'icons', 'migaku.png')))
         self.selectedProfiles = []
@@ -94,7 +94,7 @@ class SettingsGui(QScrollArea):
         self.setupMainLayout()
         self.tabs.addTab(self.getOptionsTab(), "Options")
         self.tabs.addTab(self.getAFTab(), "Active Fields")
-        self.tabs.addTab(self.getAboutTab(), "About")
+        #self.tabs.addTab(self.getAboutTab(), "About")
         self.initTooltips()
         self.loadProfileCB()
         self.loadFontSize()
@@ -1261,7 +1261,8 @@ class SettingsGui(QScrollArea):
         widget = MigakuSVG(join(self.addonPath, 'icons', name))
         widget.setFixedSize(27,27)
         return widget
-
+    
+    '''
     def getAboutTab(self):
         tab_4 = QWidget()
         tab_4.setObjectName("tab_4")
@@ -1339,6 +1340,7 @@ class SettingsGui(QScrollArea):
         migakuInfoTW.clicked.connect(lambda: openLink('https://twitter.com/Migaku_Yoga'))
         gitHubIcon.clicked.connect(lambda: openLink('https://github.com/migaku-official'))
         return tab_4
+    '''
 
     def clearAllAF(self):
         self.profileAF.clear()
