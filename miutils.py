@@ -4,6 +4,7 @@
 import aqt
 from aqt.qt import *
 from os.path import dirname, join
+from PyQt6.QtWidgets import QMessageBox
 
 addon_path = dirname(__file__)
 
@@ -32,23 +33,14 @@ def miInfo(text, parent=False, level = 'msg', day = True):
     return mb.exec_()
 
 
-def miAsk(text, parent=None, day=True):
-
+def miAsk(text, parent=None, title="Migaku"):
     msg = QMessageBox(parent)
-    msg.setWindowTitle("Migaku Chinese")
+    msg.setWindowTitle(title)
     msg.setText(text)
-    icon = QIcon(join(addon_path, 'icons', 'migaku.png'))
-    b = msg.addButton(QMessageBox.Yes)
-    b.setFixedSize(100, 30)
-    b.setDefault(True)
-    c = msg.addButton(QMessageBox.No)
-    c.setFixedSize(100, 30)
-    if not day:
-        msg.setStyleSheet(" QMessageBox {background-color: #272828;}")
-    msg.setWindowIcon(icon)
-    msg.exec_()
-    if msg.clickedButton() == b:
-        return True
-    else:
-        return False
+    # Change from QMessageBox.Yes to StandardButton
+    b = msg.addButton(QMessageBox.StandardButton.Yes)
+    c = msg.addButton(QMessageBox.StandardButton.No)
+    msg.setDefaultButton(c)
+    msg.exec()
+    return msg.clickedButton() == b
 
