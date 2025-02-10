@@ -1,5 +1,5 @@
 from aqt import mw
-from aqt.browser import ChangeModel
+# from aqt.browser import ChangeModel
 from anki.hooks import wrap
 from aqt.qt import *
 from aqt.utils import askUser
@@ -206,9 +206,9 @@ Are you sure you want to continue?"""
 
 
 
-if not hasattr(ChangeModel, "migakuOveriddenMethods"):
-    ChangeModel.migakuOveriddenMethods = True
-    ChangeModel.accept = migakuAccept
-    ChangeModel.modelChanged = migakuModelChanged
-    ChangeModel.rebuildTemplateMap = migakuRebuildTemplateMap
+# if not hasattr(ChangeModel, "migakuOveriddenMethods"):
+#     ChangeModel.migakuOveriddenMethods = True
+#     ChangeModel.accept = migakuAccept
+#     ChangeModel.modelChanged = migakuModelChanged
+#     ChangeModel.rebuildTemplateMap = migakuRebuildTemplateMap
 

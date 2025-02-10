@@ -20,6 +20,10 @@ from .miutils import miInfo, miAsk
 from operator import itemgetter
 from aqt.theme import theme_manager
 
+try:
+    from PyQt5.QtSvg import QSvgWidget
+except ModuleNotFoundError:
+    from PyQt6.QtSvgWidgets import QSvgWidget
 
 versionNumber = "ver. 1.2.3"
 
