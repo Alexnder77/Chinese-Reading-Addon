@@ -100,28 +100,22 @@ def openChineseSettings():
 
 
 def setupGuiMenu():
-    addMenu = False
-    if not hasattr(mw, 'MigakuMainMenu'):
-        mw.MigakuMainMenu = QMenu('Migaku',  mw)
-        addMenu = True
+    
     if not hasattr(mw, 'MigakuMenuSettings'):
         mw.MigakuMenuSettings = []
     if not hasattr(mw, 'MigakuMenuActions'):
         mw.MigakuMenuActions = []
     
-    setting = QAction("Chinese Settings", mw)
+    # Add to Tools menu
+    setting = QAction("Chinese Reading Settings", mw)
     setting.triggered.connect(openChineseSettings)
     mw.MigakuMenuSettings.append(setting)
 
-    mw.MigakuMainMenu.clear()
+    mw.form.menuTools.addSeparator()
     for act in mw.MigakuMenuSettings:
-        mw.MigakuMainMenu.addAction(act)
-    mw.MigakuMainMenu.addSeparator()
+        mw.form.menuTools.addAction(act)
     for act in mw.MigakuMenuActions:
-        mw.MigakuMainMenu.addAction(act)
-
-    if addMenu:
-        mw.form.menubar.insertMenu(mw.form.menuHelp.menuAction(), mw.MigakuMainMenu)
+        mw.form.menuTools.addAction(act)
 
 setupGuiMenu()
 
