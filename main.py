@@ -2,7 +2,7 @@
 # 
 from os.path import dirname, join, basename, exists, join
 import sys, os, platform, re, subprocess, aqt.utils
-from anki.utils import stripHTML, isWin, isMac
+from anki.utils import strip_html, is_win, is_mac
 from . import Pyperclip 
 import re
 
@@ -92,9 +92,9 @@ def openChineseSettings():
     if not mw.miChineseSettings:
         mw.miChineseSettings = SettingsGui(mw, addonPath, colArray, chineseModeler, autoCssJs, openChineseSettings)
     mw.miChineseSettings.show()
-    if mw.miChineseSettings.windowState() == Qt.WindowMinimized:
+    if mw.miChineseSettings.windowState() == Qt.WindowState.WindowMinimized:
             # Window is minimised. Restore it.
-           mw.miChineseSettings.setWindowState(Qt.WindowNoState)
+           mw.miChineseSettings.setWindowState(Qt.WindowState.WindowNoState)
     mw.miChineseSettings.setFocus()
     mw.miChineseSettings.activateWindow()
 

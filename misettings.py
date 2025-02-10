@@ -6,8 +6,13 @@ import sys
 import math
 from anki.hooks import addHook
 from aqt.qt import *
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QTableView, QAbstractItemView, QHeaderView
+from PyQt6.QtSvgWidgets import QSvgWidget
+from PyQt6.QtGui import QIcon, QKeySequence
+
 from aqt.utils import openLink, tooltip
-from anki.utils import isMac, isWin, isLin
+from anki.utils import is_mac, is_win, is_lin
 from anki.lang import _
 from aqt.webview import AnkiWebView
 import re
@@ -19,11 +24,6 @@ import platform
 from .miutils import miInfo, miAsk
 from operator import itemgetter
 from aqt.theme import theme_manager
-
-try:
-    from PyQt5.QtSvg import QSvgWidget
-except ModuleNotFoundError:
-    from PyQt6.QtSvgWidgets import QSvgWidget
 
 versionNumber = "ver. 1.2.3"
 
@@ -77,7 +77,7 @@ class SettingsGui(QScrollArea):
         self.tabs = QTabWidget()
         self.allFields = self.getAllFields()
         # self.setMinimumSize(800, 550);
-        self.setContextMenuPolicy(Qt.NoContextMenu)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
         self.setWindowTitle("Migaku Chinese Settings (%s)"%versionNumber)
         self.addonPath = path
         self.setWindowIcon(QIcon(join(self.addonPath, 'icons', 'migaku.png')))
@@ -116,7 +116,7 @@ class SettingsGui(QScrollArea):
         self.hotkeyEsc.activated.connect(self.hide)
         self.handleAutoCSSJS()
         self.initHandlers()
-        if isWin:
+        if is_win:
             self.resize(1000, 805)
             self.innerWidget.setFixedSize(980, 790)
         else:
@@ -124,8 +124,8 @@ class SettingsGui(QScrollArea):
             self.innerWidget.setFixedSize(980, 1020)
         self.setWidgetResizable(True)
         self.setWidget(self.innerWidget)
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.setWidgetResizable(True)
         self.show()
 
@@ -159,7 +159,7 @@ class SettingsGui(QScrollArea):
     def loadDefaultReadingCB(self):
         for key, value in self.readingTypes.items():
             self.defaultReading.addItem(key)
-            self.defaultReading.setItemData(self.defaultReading.count() - 1, value ,Qt.ToolTipRole)
+            self.defaultReading.setItemData(self.defaultReading.count() - 1, value ,Qt.ItemDataRole.ToolTipRole)
         r = self.config['ReadingType']
         self.defaultReading.setCurrentText(self.rtTranslation[r])
 
@@ -168,10 +168,10 @@ class SettingsGui(QScrollArea):
         readingConTypes = {'None': 'None: No conversion.', 'Pinyin' : 'Pinyin: Bopomofo/zhuyin is converted to pinyin.', 'Bopomofo' : 'Bopomofo: Pinyin is converted to bopomofo/zhuyin.'}
         for key, value in hanziConTypes.items():
             self.hanziConversion.addItem(key)
-            self.hanziConversion.setItemData(self.hanziConversion.count() - 1, value ,Qt.ToolTipRole)
+            self.hanziConversion.setItemData(self.hanziConversion.count() - 1, value ,Qt.ItemDataRole.ToolTipRole)
         for key, value in readingConTypes.items():
             self.readingConversion.addItem(key)
-            self.readingConversion.setItemData(self.readingConversion.count() - 1, value ,Qt.ToolTipRole)
+            self.readingConversion.setItemData(self.readingConversion.count() - 1, value ,Qt.ItemDataRole.ToolTipRole)
         hc = self.config['hanziConversion']
         rc = self.config['readingConversion']
         self.hanziConversion.setCurrentText(hc)
@@ -561,7 +561,7 @@ class SettingsGui(QScrollArea):
 
     def getAFTable(self):
         afTable = QTableWidget(self)
-        if isWin and platform.release() == '10' and theme_manager.night_mode != True:
+        if is_win and platform.release() == '10' and theme_manager.night_mode != True:
             afTable.setStyleSheet(
         "QHeaderView::section{"
             "border-top:0px solid #D8D8D8;"
@@ -580,20 +580,20 @@ class SettingsGui(QScrollArea):
         "}")
         afTable.setSortingEnabled(True)
         afTable.setColumnCount(8)
-        afTable.setSelectionBehavior(QTableView.SelectRows);
-        afTable.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff);
+        afTable.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        afTable.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         tableHeader = afTable.horizontalHeader()
         afTable.setHorizontalHeaderLabels(['Profile', 'Note Type', 'Card Type', 'Field', 'Side', 'Display Type', 'Reading Type', ''])
-        tableHeader.setSectionResizeMode(0, QHeaderView.Stretch)
-        tableHeader.setSectionResizeMode(1, QHeaderView.Stretch)
-        tableHeader.setSectionResizeMode(2, QHeaderView.Stretch)
-        tableHeader.setSectionResizeMode(3, QHeaderView.Stretch)
-        tableHeader.setSectionResizeMode(4, QHeaderView.Stretch)
-        tableHeader.setSectionResizeMode(5, QHeaderView.Stretch)
-        tableHeader.setSectionResizeMode(6, QHeaderView.Stretch)
-        tableHeader.setSectionResizeMode(7, QHeaderView.Fixed)
+        tableHeader.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        tableHeader.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        tableHeader.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        tableHeader.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
+        tableHeader.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
+        tableHeader.setSectionResizeMode(5, QHeaderView.ResizeMode.Stretch)
+        tableHeader.setSectionResizeMode(6, QHeaderView.ResizeMode.Stretch)
+        tableHeader.setSectionResizeMode(7, QHeaderView.ResizeMode.Fixed)
         afTable.setColumnWidth(7, 40)
-        afTable.setEditTriggers(QTableWidget.NoEditTriggers)
+        afTable.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers) 
         return afTable
 
     def enableSep(self, sep):
@@ -802,7 +802,7 @@ class SettingsGui(QScrollArea):
             prof = self.profileAF.currentText()
             for noteType in self.ciSort(self.cA[prof]):
                     self.noteTypeAF.addItem(noteType)
-                    self.noteTypeAF.setItemData(self.noteTypeAF.count() - 1, noteType + ' (Prof:' + prof + ')',Qt.ToolTipRole)
+                    self.noteTypeAF.setItemData(self.noteTypeAF.count() - 1, noteType + ' (Prof:' + prof + ')',Qt.ItemDataRole.ToolTipRole)
                     self.noteTypeAF.setItemData(self.noteTypeAF.count() - 1, prof + ':pN:' + noteType)
         self.loadCardTypesFields()
         self.changingProfile = False
@@ -929,13 +929,13 @@ class SettingsGui(QScrollArea):
     def unspecifiedProfileLoad(self, nt, ct, field, side, dt, rt):
         self.profileAF.setCurrentIndex(0)
         if self.findFirstNoteCardFieldMatch(nt, ct, field):
-            index = self.sideAF.findText(side, Qt.MatchFixedString)
+            index = self.sideAF.findText(side, Qt.MatchFlag.MatchFixedString)
             if index >= 0:
                 self.sideAF.setCurrentIndex(index)
-            index = self.displayAF.findText(dt, Qt.MatchFixedString)
+            index = self.displayAF.findText(dt, Qt.MatchFlag.MatchFixedString)
             if index >= 0:
                 self.displayAF.setCurrentIndex(index)
-            index = self.readingAF.findText(rt, Qt.MatchFixedString)
+            index = self.readingAF.findText(rt, Qt.MatchFlag.MatchFixedString)
             if index >= 0:
                 self.readingAF.setCurrentIndex(index)
             return True
@@ -946,9 +946,9 @@ class SettingsGui(QScrollArea):
         for i in range(self.noteTypeAF.count()):
             if self.noteTypeAF.itemText(i).startswith(nt):
                 self.noteTypeAF.setCurrentIndex(i)
-                ci = self.cardTypeAF.findText(ct, Qt.MatchFixedString)
+                ci = self.cardTypeAF.findText(ct, Qt.MatchFlag.MatchFixedString)
                 if ci >= 0:
-                    fi = self.fieldAF.findText(field, Qt.MatchFixedString)
+                    fi = self.fieldAF.findText(field, Qt.MatchFlag.MatchFixedString)
                     if fi >= 0:
                         self.noteTypeAF.setCurrentIndex(i)
                         self.cardTypeAF.setCurrentIndex(ci)
@@ -957,25 +957,25 @@ class SettingsGui(QScrollArea):
         return False
 
     def specifiedProfileLoad(self, prof, nt, ct, field, side, dt, rt):
-        index = self.profileAF.findText(prof, Qt.MatchFixedString)
+        index = self.profileAF.findText(prof, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             self.profileAF.setCurrentIndex(index)
-        index = self.noteTypeAF.findText(nt, Qt.MatchFixedString)
+        index = self.noteTypeAF.findText(nt, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             self.noteTypeAF.setCurrentIndex(index)
-        index = self.cardTypeAF.findText(ct, Qt.MatchFixedString)
+        index = self.cardTypeAF.findText(ct, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             self.cardTypeAF.setCurrentIndex(index)
-        index = self.fieldAF.findText(field, Qt.MatchFixedString)
+        index = self.fieldAF.findText(field, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             self.fieldAF.setCurrentIndex(index)
-        index = self.sideAF.findText(side, Qt.MatchFixedString)
+        index = self.sideAF.findText(side, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             self.sideAF.setCurrentIndex(index)
-        index = self.displayAF.findText(dt, Qt.MatchFixedString)
+        index = self.displayAF.findText(dt, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             self.displayAF.setCurrentIndex(index)
-        index = self.readingAF.findText(rt, Qt.MatchFixedString)
+        index = self.readingAF.findText(rt, Qt.MatchFlag.MatchFixedString)
         if index >= 0:
             self.readingAF.setCurrentIndex(index)
         return True
@@ -984,17 +984,17 @@ class SettingsGui(QScrollArea):
         self.altCB.addItem('Clipboard')
         self.altCB.addItem('──────────────────')
         self.altCB.model().item(self.altCB.count() - 1).setEnabled(False)
-        self.altCB.model().item(self.altCB.count() - 1).setTextAlignment(Qt.AlignCenter)
+        self.altCB.model().item(self.altCB.count() - 1).setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         self.altCB.addItems(self.allFields)
         self.simpCB.addItem('Clipboard')
         self.simpCB.addItem('──────────────────')
         self.simpCB.model().item(self.simpCB.count() - 1).setEnabled(False)
-        self.simpCB.model().item(self.simpCB.count() - 1).setTextAlignment(Qt.AlignCenter)
+        self.simpCB.model().item(self.simpCB.count() - 1).setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         self.simpCB.addItems(self.allFields)
         self.tradCB.addItem('Clipboard')
         self.tradCB.addItem('──────────────────')
         self.tradCB.model().item(self.tradCB.count() - 1).setEnabled(False)
-        self.tradCB.model().item(self.tradCB.count() - 1).setTextAlignment(Qt.AlignCenter)
+        self.tradCB.model().item(self.tradCB.count() - 1).setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         self.tradCB.addItems(self.allFields)
 
     def loadFieldsList(self, which):
@@ -1105,10 +1105,10 @@ class SettingsGui(QScrollArea):
         pcb.addItem('All')
         pcb.addItem('──────')
         pcb.model().item(pcb.count() - 1).setEnabled(False)
-        pcb.model().item(pcb.count() - 1).setTextAlignment(Qt.AlignCenter)
+        pcb.model().item(pcb.count() - 1).setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         for prof in self.cA:
             pcb.addItem(prof)
-            pcb.setItemData(pcb.count() -1, prof, Qt.ToolTipRole)
+            pcb.setItemData(pcb.count() -1, prof, Qt.ItemDataRole.ToolTipRole)
 
     def loadProfilesList(self):
         pl = self.currentProfiles
@@ -1282,17 +1282,17 @@ class SettingsGui(QScrollArea):
 
         migakuInfo = QLabel("Migaku:")
         migakuInfoSite = self.getSVGWidget('migaku.svg')
-        migakuInfoSite.setCursor(QCursor(Qt.PointingHandCursor))
+        #migakuInfoSite.setCursor(QCursor(Qt.CursorShape.PointingHand))
 
         migakuInfoYT = self.getSVGWidget('Youtube.svg')
-        migakuInfoYT.setCursor(QCursor(Qt.PointingHandCursor))
+        #migakuInfoYT.setCursor(QCursor(Qt.CursorShape.PointingHand))
 
         migakuInfoTW = self.getSVGWidget('Twitter.svg')
-        migakuInfoTW.setCursor(QCursor(Qt.PointingHandCursor))
+        #migakuInfoTW.setCursor(QCursor(Qt.CursorShape.PointingHand))
 
 
         migakuPatreonIcon = self.getSVGWidget('Patreon.svg')
-        migakuPatreonIcon.setCursor(QCursor(Qt.PointingHandCursor))
+        #migakuPatreonIcon.setCursor(QCursor(Qt.CursorShape.PointingHand))
         migakuAboutLinksHL3.addWidget(migakuInfo)
         migakuAboutLinksHL3.addWidget(migakuInfoSite)
         migakuAboutLinksHL3.addWidget(migakuInfoYT)
@@ -1312,7 +1312,7 @@ class SettingsGui(QScrollArea):
         migakuContactText.setWordWrap(True)
 
         gitHubIcon = self.getSVGWidget('Github.svg')
-        gitHubIcon.setCursor(QCursor(Qt.PointingHandCursor))
+        #gitHubIcon.setCursor(QCursor(Qt.CursorShape.PointingHand))
         
         migakuThanks = QGroupBox()
         migakuThanks.setTitle('A Word of Thanks')
@@ -1354,19 +1354,19 @@ class SettingsGui(QScrollArea):
         aP.addItem('All')
         aP.addItem('──────────────────')
         aP.model().item(aP.count() - 1).setEnabled(False)
-        aP.model().item(aP.count() - 1).setTextAlignment(Qt.AlignCenter)
+        aP.model().item(aP.count() - 1).setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         self.loadAllProfiles()  
         self.loadCardTypesFields()
         for key, value in self.sides.items():
             self.sideAF.addItem(key)
-            self.sideAF.setItemData(self.sideAF.count() - 1, value ,Qt.ToolTipRole)
+            self.sideAF.setItemData(self.sideAF.count() - 1, value ,Qt.ItemDataRole.ToolTipRole)
         for key, value in self.displayTypes.items():
             self.displayAF.addItem(key)
-            self.displayAF.setItemData(self.displayAF.count() - 1, value[1] ,Qt.ToolTipRole)
+            self.displayAF.setItemData(self.displayAF.count() - 1, value[1] ,Qt.ItemDataRole.ToolTipRole)
             self.displayAF.setItemData(self.displayAF.count() - 1, value[0])
         for key, value in self.readingTypes.items():
             self.readingAF.addItem(key)
-            self.readingAF.setItemData(self.readingAF.count() - 1, value ,Qt.ToolTipRole)
+            self.readingAF.setItemData(self.readingAF.count() - 1, value ,Qt.ItemDataRole.ToolTipRole)
 
     def loadAllProfiles(self):
         if not self.sortedProfiles and not self.sortedNoteTypes:
@@ -1381,23 +1381,23 @@ class SettingsGui(QScrollArea):
         aP = self.profileAF
         for prof in self.sortedProfiles:
             aP.addItem(prof)
-            aP.setItemData(aP.count() -1, prof, Qt.ToolTipRole)
+            aP.setItemData(aP.count() -1, prof, Qt.ItemDataRole.ToolTipRole)
         self.loadAllNotes()
 
     def loadAllNotes(self):
         for noteType in self.sortedNoteTypes:
             self.noteTypeAF.addItem(noteType[0])
-            self.noteTypeAF.setItemData(self.noteTypeAF.count() - 1, noteType[0],Qt.ToolTipRole)
+            self.noteTypeAF.setItemData(self.noteTypeAF.count() - 1, noteType[0],Qt.ItemDataRole.ToolTipRole)
             self.noteTypeAF.setItemData(self.noteTypeAF.count() - 1, noteType[1])
 
     def loadCardTypesFields(self):
         curProf, curNote = self.noteTypeAF.itemData(self.noteTypeAF.currentIndex()).split(':pN:')     
         for cardType in self.cA[curProf][curNote]['cardTypes']:
             self.cardTypeAF.addItem(cardType)
-            self.cardTypeAF.setItemData(self.cardTypeAF.count() - 1, cardType,Qt.ToolTipRole)
+            self.cardTypeAF.setItemData(self.cardTypeAF.count() - 1, cardType,Qt.ItemDataRole.ToolTipRole)
         for field in self.cA[curProf][curNote]['fields']:
             self.fieldAF.addItem(field)
-            self.fieldAF.setItemData(self.fieldAF.count() - 1, field,Qt.ToolTipRole)
+            self.fieldAF.setItemData(self.fieldAF.count() - 1, field,Qt.ItemDataRole.ToolTipRole)
         return
 
     def loadActiveFields(self):

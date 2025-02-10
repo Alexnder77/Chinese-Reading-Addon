@@ -2,7 +2,7 @@
 # 
 from os.path import dirname, join, basename, exists, join
 import sys, os, platform, re, subprocess, aqt.utils
-from anki.utils import stripHTML, isWin, isMac
+from anki.utils import strip_html, is_win, is_mac
 from . import Pyperclip 
 import re
 
@@ -58,13 +58,13 @@ class ChineseHandler():
         progressWidget = QWidget(None)
         layout = QVBoxLayout()
         progressWidget.setFixedSize(400, 70)
-        progressWidget.setWindowModality(Qt.ApplicationModal)
+        progressWidget.setWindowModality(Qt.WindowModality.ApplicationModal)
         progressWidget.setWindowIcon(QIcon(join(self.path, 'icons', 'migaku.png')))
         bar = QProgressBar(progressWidget)
         bar.setFixedSize(390, 50)
         bar.move(10,10)
         per = QLabel(bar)
-        per.setAlignment(Qt.AlignCenter)
+        per.setAlignment(Qt.AlignmentFlag.AlignCenter)
         progressWidget.show()
         return progressWidget, bar;
 

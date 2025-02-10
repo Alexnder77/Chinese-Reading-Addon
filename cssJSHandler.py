@@ -2,7 +2,7 @@
 # 
 from os.path import dirname, join, basename, exists, join
 import sys, os, platform, re, subprocess, aqt.utils
-from anki.utils import stripHTML, isWin, isMac
+from anki.utils import strip_html, is_win, is_mac
 from . import Pyperclip 
 import re
 

@@ -330,7 +330,7 @@ class MIChineseModels():
         config = self.mw.addonManager.getConfig(__name__)
         add = False
         for model in self.modelList:
-            if not self.mw.col.models.byName(model[0]):
+            if not self.mw.col.models.by_name(model[0]):
                 if model[0].startswith('Migaku Chinese(CN)') and config['addSimpNote']:
                     self.addModel(model)
                     self.addExportTemplates('Chinese(CN)')
