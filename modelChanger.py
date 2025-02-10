@@ -204,11 +204,21 @@ Are you sure you want to continue?"""
         self.cleanup()
         QDialog.accept(self)
 
-
-
 # if not hasattr(ChangeModel, "migakuOveriddenMethods"):
 #     ChangeModel.migakuOveriddenMethods = True
 #     ChangeModel.accept = migakuAccept
 #     ChangeModel.modelChanged = migakuModelChanged
 #     ChangeModel.rebuildTemplateMap = migakuRebuildTemplateMap
 
+from aqt.modelchooser import ChangeModel
+from anki.hooks import wrap
+
+def init_model_changer():
+    if not hasattr(ChangeModel, "migakuOveriddenMethods"):
+        ChangeModel.migakuOveriddenMethods = True
+        ChangeModel.accept = wrap(ChangeModel.accept, migakuAccept, "around")
+        ChangeModel.modelChanged = wrap(ChangeModel.modelChanged, migakuModelChanged, "around")
+        ChangeModel.rebuildTemplateMap = wrap(ChangeModel.rebuildTemplateMap, migakuRebuildTemplateMap, "around")
+
+# Call at addon init
+init_model_changer()
